@@ -2,15 +2,14 @@
 #training the model.
 #process--->1.load data(X:list of lint,y:int). 2.create session. 3.feed data. 4.training (5.validation) ,(6.prediction)
 import sys
-reload(sys)
-sys.setdefaultencoding('utf8')
+import os
+import importlib,sys
 import tensorflow as tf
 import numpy as np
 from p5_fastTextB_model import fastTextB as fastText
-from p4_zhihu_load_data import load_data,create_voabulary,create_voabulary_label
+from data_util_zhihu import load_data,create_voabulary,create_voabulary_label
 from tflearn.data_utils import to_categorical, pad_sequences
-import os
-import word2vec
+from gensim.models import word2vec
 import pickle
 
 #configuration
@@ -43,9 +42,9 @@ def main(_):
         vocabulary_word2index, vocabulary_index2word = create_voabulary()
         vocab_size = len(vocabulary_word2index)
         vocabulary_word2index_label,_ = create_voabulary_label()
-        train, test, _ = load_data(vocabulary_word2index, vocabulary_word2index_label,data_type='train')
-        trainX, trainY = train
-        testX, testY = test
+        train, test, _ = load_data(vocabulary_word2index, vocabulary_word2index_label)
+        trainX, trainY = train   # trainX [127355, 123989, 78705, 29636, 71127, 82518, 39930, 68989, 92118, 29636, 126356, 1067, 81680, 96375, 92118, 29636, 126356, 19423] trainingY 161
+        testX, testY = test  # textX [75235, 3502, 69432, 133516, 46012, 19423] trainingY 1214
         print("testX.shape:", np.array(testX).shape)  # 2500个list.每个list代表一句话
         print("testY.shape:", np.array(testY).shape)  # 2500个label
         print("testX[0]:", testX[0])  # [17, 25, 10, 406, 26, 14, 56, 61, 62, 323, 4]
